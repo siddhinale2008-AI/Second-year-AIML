@@ -1,0 +1,120 @@
+from collections import deque
+import copy
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.left = self.right = None
+
+
+class BST:
+    def __init__(self):
+        self.root = None
+
+    # Insert
+    def insert(self, root, data):
+        if root is None:
+            return Node(data)
+
+        if data < root.data:
+            root.left = self.insert(root.left, data)
+        elif data > root.data:
+            root.right = self.insert(root.right, data)
+        else:
+            print("Duplicate not allowed")
+
+        return root
+
+    # Search
+    def search(self, root, data):
+        if root is None or root.data == data:
+            return root
+
+        if data < root.data:
+            return self.search(root.left, data)
+        return self.search(root.right, data)
+
+    # Display / Inorder
+    def inorder(self, root):
+        if root:
+            self.inorder(root.left)
+            print(root.data, end=" ")
+            self.inorder(root.right)
+
+    # Depth
+    def depth(self, root):
+        if root is None:
+            return 0
+        return 1 + max(self.depth(root.left),
+                       self.depth(root.right))
+
+    # Mirror
+    def mirror(self, root):
+        if root:
+            root.left, root.right = root.right, root.left
+            self.mirror(root.left)
+            self.mirror(root.right)
+
+    # Parent nodes
+    def parents(self, root):
+        if root:
+            if root.left or root.right:
+                print(root.data, end=" ")
+            self.parents(root.left)
+            self.parents(root.right)
+
+    # Leaf nodes
+    def leaves(self, root):
+        if root:
+            if not root.left and not root.right:
+                print(root.data, end=" ")
+            self.leaves(root.left)
+            self.leaves(root.right)
+
+    # Level wise
+    def levelwise(self):
+        if not self.root:
+            return
+
+        q = deque([self.root])
+
+        while q:
+            node = q.popleft()
+            print(node.data, end=" ")
+
+            if node.left:
+                q.append(node.left)
+            if node.right:
+                q.append(node.right)
+
+
+# Main Program
+tree = BST()
+
+for x in [50, 30, 70, 20, 40, 60, 80]:
+    tree.root = tree.insert(tree.root, x)
+
+print("Inorder:")
+tree.inorder(tree.root)
+
+print("\nDepth:", tree.depth(tree.root))
+
+print("Search 40:", "Found" if tree.search(tree.root, 40) else "Not Found")
+
+print("Parent nodes:")
+tree.parents(tree.root)
+
+print("\nLeaf nodes:")
+tree.leaves(tree.root)
+
+print("\nLevel wise:")
+tree.levelwise()
+
+# Create copy
+copy_tree = copy.deepcopy(tree)
+print("\nCopy created")
+
+# Mirror image
+tree.mirror(tree.root)
+print("Mirror tree:")
+tree.inorder(tree.root)
