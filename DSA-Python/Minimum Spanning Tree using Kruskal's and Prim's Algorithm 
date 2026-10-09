@@ -1,0 +1,88 @@
+
+# Minimum Spanning Tree using Kruskal's and Prim's Algorithm
+
+# Departments
+vertices = ["CSE", "AIML", "ENTC", "Mechanical", "Civil"]
+
+# Edges: (distance, department1, department2)
+edges = [
+    (10, "CSE", "AIML"),
+    (20, "CSE", "ENTC"),
+    (30, "CSE", "Mechanical"),
+    (40, "AIML", "ENTC"),
+    (50, "AIML", "Civil"),
+    (25, "ENTC", "Mechanical"),
+    (15, "Mechanical", "Civil"),
+    (35, "ENTC", "Civil")
+]
+
+
+# KRUSKAL'S ALGORITHM
+def kruskal():
+    parent = {}
+
+    for v in vertices:
+        parent[v] = v
+
+    def find(v):
+        while parent[v] != v:
+            v = parent[v]
+        return v
+
+    mst = []
+    total = 0
+
+    edges_sorted = sorted(edges)
+
+    for distance, u, v in edges_sorted:
+        root_u = find(u)
+        root_v = find(v)
+
+        if root_u != root_v:
+            mst.append((u, v, distance))
+            total += distance
+            parent[root_v] = root_u
+
+    print("\nKruskal's MST:")
+    for u, v, distance in mst:
+        print(u, "--", v, "=", distance, "m")
+
+    print("Total distance =", total, "m")
+
+
+# PRIM'S ALGORITHM
+def prim():
+    visited = set()
+    mst = []
+    total = 0
+
+    visited.add("CSE")
+
+    while len(visited) < len(vertices):
+        minimum = None
+
+        for distance, u, v in edges:
+            if ((u in visited and v not in visited) or
+                (v in visited and u not in visited)):
+
+                if minimum is None or distance < minimum[0]:
+                    minimum = (distance, u, v)
+
+        distance, u, v = minimum
+
+        mst.append((u, v, distance))
+        total += distance
+
+        visited.add(u)
+        visited.add(v)
+
+    print("\nPrim's MST:")
+    for u, v, distance in mst:
+        print(u, "--", v, "=", distance, "m")
+
+    print("Total distance =", total, "m")
+
+
+# Run both algorithms
+kruskal()
+prim()
